@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>صفحه نمونه</title>
+  <style>
+    @import url('https://cdn.jsdelivr.net/npm/vazir-font@v30.1.0/dist/font-face.css');
+    body {
+      /*font-family: 'Vazir', sans-serif;*/
+      background-color: #e6f0fa;
+      margin: 0;
+      direction: rtl;
+      position: relative;
+      height: 100vh;
+    }
+    .container {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      padding-top: 50px;
+    }
+    .left-panel, .right-panel, .add-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      width: 250px;
+    }
+    .draggable {
+      height: 40px;
+      background-color: #fff;
+      border: 1px solid #ccc;
+      display: flex;
+      align-items: center;
+      padding: 0 10px;
+      cursor: move;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+    .right-panel .draggable {
+      justify-content: space-between;
+    }
+    .right-panel .draggable span:last-child {
+      margin-right: 5px;
+    }
+    .add-panel .draggable {
+      justify-content: flex-start;
+    }
+    .add-panel select {
+      height: 40px;
+      padding: 0 10px;
+      font-size: 14px;
+      border: 1px solid #ccc;
+      background-color: #fff;
+      font-family: 'Vazir', sans-serif;
+    }
+    #header {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      color: #fff;
+      background-color: #333;
+      padding: 5px 10px;
+      font-size: 14px;
+      font-family: 'Vazir', sans-serif;
+    }
+    button {
+      height: 40px;
+      padding: 0 10px;
+      font-size: 14px;
+      background-color: #fff;
+      border: 1px solid #ccc;
+      cursor: pointer;
+      font-family: 'Vazir', sans-serif;
+    }
+  </style>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const draggables = document.querySelectorAll('.draggable');
+      const containers = document.querySelectorAll('.left-panel, .right-panel');
+      const addSelect = document.getElementById('add-select');
+      const addButton = document.getElementById('add-button');
+      const leftPanel = document.querySelector('.left-panel');
+
+      draggables.forEach(draggable => {
+        draggable.addEventListener('dragstart', () => {
+          draggable.classList.add('dragging');
+        });
+
+        draggable.addEventListener('dragend', () => {
+          draggable.classList.remove('dragging');
+        });
+      });
+
+      containers.forEach(container => {
+        container.addEventListener('dragover', e => {
+          e.preventDefault();
+          const draggable = document.querySelector('.dragging');
+          const afterElement = getDragAfterElement(container, e.clientY);
+          if (afterElement == null) {
+            container.appendChild(draggable);
+          } else {
+            container.insertBefore(draggable, afterElement);
+          }
+        });
+      });
+
+      addButton.addEventListener('click', () => {
+        const selectedOption = addSelect.value;
+        if (selectedOption) {
+          const newDraggable = document.createElement('div');
+          newDraggable.className = 'draggable';
+          newDraggable.draggable = true;
+          newDraggable.innerHTML = `${selectedOption} <span style="margin-right: 5px;">+</span>`;
+          newDraggable.addEventListener('dragstart', () => {
+            newDraggable.classList.add('dragging');
+          });
+          newDraggable.addEventListener('dragend', () => {
+            newDraggable.classList.remove('dragging');
+          });
+          leftPanel.appendChild(newDraggable);
+          addSelect.value = '';
+        }
+      });
+
+      function getDragAfterElement(container, y) {
+        const draggableElements = [...container.querySelectorAll('.draggable:not(.dragging)')];
+
+        return draggableElements.reduce((closest, child) => {
+          const box = child.getBoundingClientRect();
+          const offset = y - box.top - box.height / 2;
+          if (offset < 0 && offset > closest.offset) {
+            return { offset: offset, element: child };
+          } else {
+            return closest;
+          }
+        }, { offset: Number.NEGATIVE_INFINITY }).element;
+      }
+    });
+  </script>
+</head>
+<body>
+  <div id="header">پنل تنظیمات</div>
+  <div class="container">
+    <div class="left-panel" droppable="true">
+      <div class="draggable" draggable="true">
+        ♻️ <span style="margin-right: 5px;">+</span> تمیز کردن دیتابیس
+      </div>
+      <div class="draggable" draggable="true">
+        🆙 <span style="margin-right: 5px;">+</span> اپدیت
+      </div>
+    </div>
+    <div class="right-panel" droppable="true">
+      <div class="draggable" draggable="true">
+        <span>🎨 پاک کردن کش</span>
+        <span>❌</span>
+      </div>
+      <div class="draggable" draggable="true">
+        <span>🧪 تست دیتا</span>
+        <span>❌</span>
+      </div>
+      <div class="draggable" draggable="true">
+        <span>🔄 ریست کردن تنظیمات</span>
+        <span>❌</span>
+      </div>
+      <div class="draggable" draggable="true">
+        <span>🔧 آپدیت خودکار</span>
+        <span>❌</span>
+      </div>
+    </div>
+    <div class="add-panel">
+      <select id="add-select">
+        <option value="">انتخاب کنید</option>
+        <option value="🌐">اتصال به شبکه</option>
+        <option value="🔍">جستجو</option>
+        <option value="📊">نمایش آمار</option>
+      </select>
+      <button id="add-button">افزودن</button>
+    </div>
+  </div>
+</body>
+</html>
