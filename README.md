@@ -25,4 +25,4 @@
 
 ## ✏️[اموزش رفع مشکلات رایج](https://github.com/Mmd-Amir/mirza_pro_stable/blob/main/README2.md)
 
-=======
+
