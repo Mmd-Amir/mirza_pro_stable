@@ -1,0 +1,18 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Allow direct access to static asset directories
+    RewriteRule ^(assets|js|fonts|version)(/|$) - [L,NC]
+
+    # Allow existing files or directories to be served normally
+    RewriteCond %{REQUEST_FILENAME} -f [OR]
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteRule ^ - [L]
+
+    # Route everything else through index.php while keeping query strings
+    RewriteRule ^ index.php [QSA,L]
+</IfModule>
+
+<IfModule !mod_rewrite.c>
+    ErrorDocument 404 /app/index.php
+</IfModule>
