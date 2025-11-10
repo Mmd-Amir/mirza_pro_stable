@@ -1,0 +1,1 @@
+import{j as a,m as t}from"./vendor-CIGJ9g2q.js";function n({children:i}){return a.jsx(t.div,{initial:{opacity:0,y:20},animate:{opacity:1,y:0},exit:{opacity:0,y:-20},transition:{duration:.3,ease:"easeInOut"},className:"flex min-h-[calc(100vh-8rem)] w-full flex-col",children:i})}export{n as P};
